@@ -26,6 +26,20 @@ io.on("connection", (socket) => {
 		}
 	});
 
+	socket.on("callingTo", (data) => {
+		if (data.friendSocketID) {
+			console.log("callingTo", data.friendSocketID, socket.id);
+
+			io.to(data.friendSocketID).emit("calling", data);
+		}
+
+		// io.emit("calledBy", data);
+	});
+
+	socket.on("calledAcceptedBy", (data) => {
+		io.to(data.friendSocketID).emit("callAccepted", data);
+	});
+
 	socket.on("disconnect", () => {
 		console.log("socket disconnected");
 
@@ -33,11 +47,6 @@ io.on("connection", (socket) => {
 
 		io.emit("allusers", allusers());
 		// console.log("user disconnected", socket.id);
-	});
-
-	socket.on("callingTo", (data) => {
-		console.log("callingTo", data);
-		io.to(data.friendSocketID).emit("calledBy", data);
 	});
 });
 
